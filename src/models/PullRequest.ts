@@ -7,7 +7,7 @@ export interface PullRequest {
 
 export interface PullRequestData {
   url: string;
-  id: string;
+  pullRequestID: string;
   node_id: string;
   user: PullRequestUserData;
   created_at: Date;
@@ -18,13 +18,13 @@ export interface PullRequestData {
 
 export interface PullRequestUserData {
   login: string;
-  id: string;
+  githubId: string;
   avatar_url: string;
   type: string;
 }
 
 export interface Repository {
-  id: string;
+  repositoryId: string;
   name: string;
   full_name: string;
   private: boolean;

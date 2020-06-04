@@ -6,7 +6,7 @@ export function buildPullRequestObject(body: any): PullRequest {
   const { user } = pull_request;
 
   const repo: Repository = {
-    id: repository.id,
+    repositoryId: repository.id,
     name: repository.name,
     full_name: repository.full_name,
     private: repository.private
@@ -14,14 +14,14 @@ export function buildPullRequestObject(body: any): PullRequest {
 
   const prUserData: PullRequestUserData = {
     login: user.login,
-    id: user.id,
+    githubId: user.id,
     avatar_url: user.avatar_url,
     type: user.type
   }
 
   const prData: PullRequestData = {
     url: pull_request.url,
-    id: pull_request.id,
+    pullRequestID: pull_request.id,
     node_id: pull_request.node_id,
     user: prUserData,
     created_at: pull_request.created_at,

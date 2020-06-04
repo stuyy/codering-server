@@ -5,7 +5,7 @@ const PRUserDataSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.String,
     required: true,
   },
-  id: {
+  githubId: {
     type: mongoose.SchemaTypes.String,
     required: true,
   },
@@ -24,7 +24,7 @@ const PRDataSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.String,
     required: true,
   },
-  id: {
+  pullRequestID: {
     type: mongoose.SchemaTypes.String,
     required: true,
   },
@@ -36,14 +36,14 @@ const PRDataSchema = new mongoose.Schema({
 });
 
 const RepositorySchema = new mongoose.Schema({
-  id: mongoose.SchemaTypes.String,
+  repositoryId: mongoose.SchemaTypes.String,
   name: mongoose.SchemaTypes.String,
   fullName: mongoose.SchemaTypes.String,
   private: mongoose.SchemaTypes.Boolean
 });
 
 const PullRequestSchema = new mongoose.Schema({
-  action: {
+  state: {
     type: mongoose.SchemaTypes.String,
     required: true,
   },
