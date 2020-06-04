@@ -1,8 +1,10 @@
 export interface PullRequest {
-  action: string;
+  state: string;
   number: number;
   pull_request: PullRequestData;
   repository: Repository;
+  _id?: string;
+  __v?: number;
 }
 
 export interface PullRequestData {

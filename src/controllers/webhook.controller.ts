@@ -21,7 +21,7 @@ export default class WebhookController {
         console.time(`PR ${pullRequestID} was opened.`)
         const pr = buildPullRequestObject(req.body);
         const newPr = new PullRequestModel({
-          state: pr.action,
+          state: pr.state,
           number: pr.number,
           pullRequestData: pr.pull_request,
           pullRequestUserData: pr.pull_request.user,

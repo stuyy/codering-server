@@ -31,7 +31,7 @@ export function buildPullRequestObject(body: any): PullRequest {
   }
 
   return {
-    action: body.action,
+    state: body.action,
     number: body.number,
     pull_request: prData,
     repository: repo

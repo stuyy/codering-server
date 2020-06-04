@@ -6,8 +6,15 @@ export default class PullRequestController {
   static async getPullRequests(req: Request | any, res: Response){
     const { user } = <{ user: UserSession }>req;
     if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
-    const pullRequests = await PullRequestService.getPullRequests(user.githubId);
-    console.log(pullRequests);
+    console.time(`Fetching PRs for User ${user.username} (${user.githubId})`);
+    try {
+      const pullRequests = await PullRequestService.getPullRequests(user.githubId);
+      console.timeEnd(`Fetching PRs for User ${user.username} (${user.githubId})`);
+      res.status(200).send(pullRequests);
+    } catch (err) {
+      console.log(err);
+      res.status(500).send({ msg: 'Internal Server Error' });
+    }
   }
 
   static async getPullRequestByIdOrName(req: Request, res: Response){
