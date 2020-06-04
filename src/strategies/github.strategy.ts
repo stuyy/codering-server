@@ -12,9 +12,6 @@ const {
   GH_CB_DEV
 } = process.env;
 
-
-console.log('Environment: ' + ENVIRONMENT);
-
 passport.serializeUser(function(user, done) {
   if (user instanceof Error) {
     return done(user, null);
@@ -35,21 +32,14 @@ passport.use(new GithubStrategy({
   callbackURL: (ENVIRONMENT === 'DEVELOPMENT' ? GH_CB_DEV : GITHUB_CALLBACK_URL) || '',
   scope: ['user'],
 }, async (accessToken: string, refreshToken: string, profile: any, done: Function) => {
+  console.time('Creating User');
   const { id: githubId, displayName, username, profileUrl } = profile;
   const { avatar_url: avatar } = profile._json;
   const findUser = await User.findOne({ githubId });
-  if (findUser) {
-    return done(null, findUser);
-  }
-  const user = new User({
-    githubId,
-    displayName,
-    username,
-    avatar,
-    profileUrl,
-    roles: ['USER'],
-  });
+  if (findUser) return done(null, findUser);
+  const user = new User({ githubId, displayName, username, avatar, profileUrl, roles: ['USER'] });
   const newUser = await user.save();
+  console.timeEnd('Creating User');
   return done(null, newUser);
 }));
 

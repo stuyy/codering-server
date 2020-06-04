@@ -1,16 +1,21 @@
 import express from 'express';
 import session from 'express-session';
+import SessionStore from 'connect-mongo';
 import passport from 'passport';
+import mongoose from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
-import database from './database/database';
-import authRoute from './routes/auth';
-import githubRoute from './routes/github/github';
+import apiRoute from './routes/index';
 
 config();
-const github = require('./strategies/github.strategy');
 
-// const discord = require('./strategies/discord.strategy');
+const MongoStore = SessionStore(session);
+mongoose.connect(process.env.MONGODB || '', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
+
+const github = require('./strategies/github.strategy');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -32,19 +37,13 @@ app.use(session({
   secret: 'some secret',
   cookie: {
     maxAge: 3600000 * 24 * 7
-  }
+  },
+  store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/intellectual/auth', authRoute);
-app.use('/api/intellectual/github', githubRoute);
+app.use('/api/intellectual', apiRoute);
 
-(async () => {
-  console.log(process.env.ENVIRONMENT);
-  const db = await database();
-  db.on('open', () => console.log('Connected to DB'));
-  db.on('error', () => console.log('Error with DB'));
-  app.listen(PORT, () => console.log(`Listening on Port ${PORT}.`));
-})();
+app.listen(PORT, () => console.log(`Listening on Port ${PORT}.`));

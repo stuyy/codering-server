@@ -5,9 +5,9 @@ import { buildPullRequestObject } from '../utilities/resolver';
 
 export default class WebhookController {
   static async postGithubPullRequest(req: Request, res: Response) {
+    console.log('A new pull request action was created');
     const { action } = req.body;
     if (action === 'opened') {
-      
       const pr = buildPullRequestObject(req.body);
       const newPr = new PullRequestModel({
         action: pr.action,
@@ -25,7 +25,6 @@ export default class WebhookController {
     console.log(action);
     res.status(201);
   }
-
   static async getGithubPullRequest() {
     
   }
