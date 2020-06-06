@@ -57,6 +57,6 @@ export default class WebhookController {
   }
 
   static async postGithubIssue(req: Request, res: Response) {
-    console.log(req.body);
+    console.log(`New Issue`)
   }
 }

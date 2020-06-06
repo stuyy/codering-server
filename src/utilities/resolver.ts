@@ -1,4 +1,5 @@
 import { Repository, PullRequestUserData, PullRequestData, PullRequest } from '../models/PullRequest';
+import { GithubIssue, GithubIssueUser, GithubIssueData } from '../models/GithubIssue';
 
 export function buildPullRequestObject(body: any): PullRequest {
 
@@ -35,5 +36,44 @@ export function buildPullRequestObject(body: any): PullRequest {
     number: body.number,
     pull_request: prData,
     repository: repo
+  };
+}
+
+export function buildGithubIssueObject(body: any): GithubIssue {
+  
+  const { action: state, issue, repository: repo } = body;
+  const { user } = issue;
+  
+  const issueUser: GithubIssueUser = {
+    login: user.login,
+    githubId: user.id,
+    avatar_url: user.avatar_url,
+    type: user.type
+  };
+
+  const issueData: GithubIssueData = {
+    htmlUrl: issue.html_url,
+    apiUrl: issue.url,
+    commentsUrl: issue.comments_url,
+    nodeId: issue.node_id,
+    number: issue.number,
+    title: issue.title,
+    user: issueUser,
+    createdAt: issue.created_at,
+    updatedAt: issue.updated_at,
+    closedAt: issue.closed_at
+  };
+
+  const repository: Repository = {
+    repositoryId: repo.id,
+    name: repo.name,
+    full_name: repo.full_name,
+    private: repo.private
+  }
+
+  return {
+    state,
+    issueData,
+    repository,
   };
 }

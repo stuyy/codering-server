@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const PRUserDataSchema = new mongoose.Schema({
+export const PRUserDataSchema = new mongoose.Schema({
   login: {
     type: mongoose.SchemaTypes.String,
     required: true,
@@ -35,7 +35,7 @@ const PRDataSchema = new mongoose.Schema({
   merged_at: mongoose.SchemaTypes.Date,
 });
 
-const RepositorySchema = new mongoose.Schema({
+export const RepositorySchema = new mongoose.Schema({
   repositoryId: mongoose.SchemaTypes.String,
   name: mongoose.SchemaTypes.String,
   fullName: mongoose.SchemaTypes.String,
