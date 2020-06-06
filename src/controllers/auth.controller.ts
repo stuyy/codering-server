@@ -1,8 +1,13 @@
 import { Request, Response } from 'express';
 import { UserSession } from '../models/SessionUser';
+import { config } from 'dotenv';
 import User from '../database/models/User';
-const REDIRECT_URI = process.env.ENVIRONMENT === 'DEVELOPMENT' ? 'http://localhost:4200/dashboard' : 'https://ansonfoong.com/intellectual/dashboard';
 
+config();
+
+const { ENVIRONMENT, REDIRECT_PROD, REDIRECT_DEV } = process.env;
+
+const REDIRECT_URI = (ENVIRONMENT === 'DEVELOPMENT' ? REDIRECT_DEV : REDIRECT_PROD) || '';
 
 export default class AuthController {
   static async githubRedirect(req: Request, res: Response) {

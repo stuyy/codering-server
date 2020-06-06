@@ -12,4 +12,8 @@ export default class PullRequestService {
       { 'pullRequestUserData.login': nameOrId }
     ]);
   }
+
+  static async getAllPullRequests(): Promise<PullRequest[]> {
+    return <PullRequest[]><unknown>PullRequestModel.find();
+  }
 }

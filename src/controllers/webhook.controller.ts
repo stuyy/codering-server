@@ -8,10 +8,9 @@ import WebhookService from '../services/webhook.service';
 
 export default class WebhookController {
   static async postGithubPullRequest(req: Request, res: Response) {
-    console.log('A new pull request action was created');
     const { action, pull_request } = req.body;
     const { id: pullRequestID, merged } = pull_request;
-  
+    console.log(`New PR Action: ${action}`);
     if (pull_request.base.ref !== 'master')
       return res.status(403).json({ msg: 'Not Master Branch' });
     // Before we start saving Pull Requests to the Database, we must check the Database for an "Event"
@@ -55,5 +54,9 @@ export default class WebhookController {
   }
   static async getGithubPullRequest() {
     
+  }
+
+  static async postGithubIssue(req: Request, res: Response) {
+    console.log(req.body);
   }
 }

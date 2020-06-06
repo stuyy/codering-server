@@ -26,10 +26,7 @@ app.use(express.json({ verify: (req: any, res, buf: Buffer) => {
 
 app.use(express.urlencoded({ extended: false }));
 
-app.use(cors({
-  origin: ['http://localhost:4200'],
-  credentials: true,
-}));
+app.use(cors({ origin: ['http://localhost:4200'], credentials: true }));
 
 app.use(session({
   saveUninitialized: false,
@@ -44,6 +41,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.use('/api/intellectual', apiRoute);
+app.use('/api', apiRoute);
 
 app.listen(PORT, () => console.log(`Listening on Port ${PORT}.`));

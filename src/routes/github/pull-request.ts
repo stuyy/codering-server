@@ -5,6 +5,8 @@ const router = Router();
 
 router.get('/', PullRequestController.getPullRequests);
 router.get('/:idOrName', PullRequestController.getPullRequestByIdOrName);
+router.get('/users/all', PullRequestController.getAllPullRequests);
+
 
 router.use((req: Request, res: Response, next: Function) => {
   if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
