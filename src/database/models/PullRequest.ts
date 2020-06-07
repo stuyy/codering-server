@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-export const PRUserDataSchema = new mongoose.Schema({
+export const UserDataSchema = new mongoose.Schema({
   login: {
     type: mongoose.SchemaTypes.String,
     required: true,
@@ -19,7 +19,7 @@ export const PRUserDataSchema = new mongoose.Schema({
   }
 });
 
-const PRDataSchema = new mongoose.Schema({
+const PullRequestDataSchema = new mongoose.Schema({
   url: {
     type: mongoose.SchemaTypes.String,
     required: true,
@@ -51,8 +51,8 @@ const PullRequestSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.Number,
     required: true,
   },
-  pullRequestData: PRDataSchema,
-  pullRequestUserData: PRUserDataSchema,
+  pullRequestData: PullRequestDataSchema,
+  pullRequestUserData: UserDataSchema,
   repository: RepositorySchema,
 });
 

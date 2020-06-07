@@ -21,6 +21,7 @@ export default class PullRequestController {
     console.log(req.user);
     if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
   }
+  
   static async getAllPullRequests(req: Request, res: Response) {
     try {
       const pullRequests = await PullRequestService.getAllPullRequests();

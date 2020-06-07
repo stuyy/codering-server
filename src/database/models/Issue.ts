@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { PRUserDataSchema, RepositorySchema } from './PullRequest';
+import { UserDataSchema, RepositorySchema } from './PullRequest';
 
 export const IssueDataSchema = new mongoose.Schema({
   htmlUrl: { type: mongoose.SchemaTypes.String, required: true },
@@ -8,7 +8,7 @@ export const IssueDataSchema = new mongoose.Schema({
   nodeId: { type: mongoose.SchemaTypes.String, required: true },
   number: { type: mongoose.SchemaTypes.Number, required: true },
   title: { type: mongoose.SchemaTypes.String, required: true },
-  user: { type: PRUserDataSchema, required: true },
+  user: { type: UserDataSchema, required: true },
   createdAt: { type: mongoose.SchemaTypes.Date, required: true },
   updatedAt: { type: mongoose.SchemaTypes.Date, required: true },
   closedAt: { type: mongoose.SchemaTypes.Date, required: false }
