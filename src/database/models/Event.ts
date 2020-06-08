@@ -6,6 +6,7 @@ export const EventSchema = new mongoose.Schema({
   repositoryId: {
     type: mongoose.SchemaTypes.String,
     required: true,
+    unique: true,
   },
   repository: {
     type: RepositorySchema,
@@ -15,8 +16,8 @@ export const EventSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.String,
     required: true,
   },
-  creator: {
-    type: UserSchema,
+  creatorId: {
+    type: mongoose.SchemaTypes.String,
     required: true,
   },
   startDate: {

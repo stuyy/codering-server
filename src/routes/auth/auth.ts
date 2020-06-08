@@ -7,4 +7,5 @@ const router = Router();
 router.get('/user', AuthController.getUserDetails);
 router.get('/github', passport.authenticate('github'));
 router.get('/github/redirect', passport.authenticate('github'), AuthController.githubRedirect);
+
 export default router;

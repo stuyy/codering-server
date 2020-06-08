@@ -10,8 +10,9 @@ export enum EventStatus {
 export interface Event {
   _id?: string;
   repositoryId?: string;
+  repository: Repository,
   status: EventStatus;
-  creator: UserSession;
+  creatorId: string;
   startDate: Date;
   endDate: Date;
   pullRequestPoints: number;

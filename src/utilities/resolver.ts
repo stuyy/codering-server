@@ -77,3 +77,12 @@ export function buildGithubIssueObject(body: any): GithubIssue {
     repository,
   };
 }
+
+export function buildRepositoryObject(repo: any): Repository {
+  return {
+    repositoryId: repo.id,
+    name: repo.name,
+    full_name: repo.full_name,
+    private: repo.private
+  }
+}
