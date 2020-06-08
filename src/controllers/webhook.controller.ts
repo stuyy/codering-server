@@ -4,6 +4,9 @@ import { buildPullRequestObject } from '../utilities/resolver';
 import { GithubActions } from '../constants/GithubActions';
 import WebhookService from '../services/webhook.service';
 import EventService from '../services/events.service';
+import { EventData, EventUser, Points, Contributions } from '../models/EventData';
+import { Event } from '../models/Event';
+import EventDataModel from '../database/models/EventData';
 
 // We need to check to make sure if the User is in the Database.
 
@@ -32,10 +35,51 @@ export default class WebhookController {
     // Document and check which Repository that Event corresponds to.
     switch (action) {
       case GithubActions.OPENED: {
-        console.time(`PR ${pullRequestID} was opened.`)
-        const newPr = await WebhookService.handleOpenedPullRequest(req.body);
-        console.timeEnd(`PR ${pullRequestID} was opened.`)
-        break;
+        try {
+          console.time(`PR ${pullRequestID} was opened.`)
+          const newPr = await WebhookService.handleOpenedPullRequest(req.body);
+          console.timeEnd(`PR ${pullRequestID} was opened.`);
+          const eventData = <EventData>await EventService.getEventData(repository.id);
+          const eventObj = <Event>await EventService.getEvent(repository.id);
+          if (eventData && eventObj) {
+            const id: string = pull_request.user.id;
+            const { users } = eventData;
+            const user = users!.get(id.toString());
+            const { pullRequestPoints } = eventObj;
+            console.log(users);
+            if (user) {
+              console.log('User found in Map');
+              user.points.pullRequests += pullRequestPoints;
+              user.contributions.pullRequests++;
+              users?.set(user.githubId.toString(), user);
+              await EventDataModel.findOneAndUpdate({
+                repositoryId: repository.id
+              }, { users });
+              console.log('Updated...');
+            } else {
+              console.log('Not found in Map');
+              const points: Points = { pullRequests: pullRequestPoints, comments: 0, issues: 0, merges: 0, };
+              const contributions: Contributions = { pullRequests: 1, comments: 0, issues: 0, merges: 0 }
+              const eventUser: EventUser = {
+                githubId: pull_request.user.id,
+                repositoryId: repository.id,
+                points,
+                contributions,
+              };
+              users?.set(id.toString(), eventUser);
+              await EventDataModel.findOneAndUpdate({
+                repositoryId: repository.id,
+              }, { users });
+              console.log('updated');
+            }
+          } else {
+            throw new Error('Event Data or Event not found for this Event');
+          }
+          break;
+        } catch (err) {
+          console.log(err);
+          return res.status(500).send({ msg: 'Internal Server Error' });
+        }
       }
       case GithubActions.REOPENED: {
         // Search the Database for the Pull Request

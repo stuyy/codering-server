@@ -22,20 +22,29 @@ export default class EventController {
       return res.status(409).send({ msg: 'An event is already associated with that repository', repository });
     } else {
       const { body } = req;
-      const event = await EventService.createEvent({
-        creatorId: body.creatorId,
-        startDate: body.startDate,
-        endDate: body.endDate,
-        pullRequestPoints: body.pullRequestPoints,
-        issuePoints: body.issuePoints,
-        commentsPoints: body.commentsPoints,
-        mergedPullRequestPoints: body.mergedPullRequestPoints,
-        repository: buildRepositoryObject(repository),
-        repositoryId: repository.id,
-        status: EventStatus.OPENED
-      });
-      console.log(event);
-      res.status(201).send(event);
+      try {
+        const event = await EventService.createEvent({
+          creatorId: body.creatorId,
+          startDate: body.startDate,
+          endDate: body.endDate,
+          pullRequestPoints: body.pullRequestPoints,
+          issuePoints: body.issuePoints,
+          commentsPoints: body.commentsPoints,
+          mergedPullRequestPoints: body.mergedPullRequestPoints,
+          repository: buildRepositoryObject(repository),
+          repositoryId: repository.id,
+          status: EventStatus.OPENED
+        });
+        // Need to create EventData Model
+        const eventData = await EventService.createEventData({
+          repositoryId: repository.id
+        });
+        console.log(eventData);
+        return res.status(201).send(event);
+      } catch (err) {
+        console.log(err);
+        return res.status(500).send({ msg: 'Internal Server Error' });
+      }
     }
   }
 }

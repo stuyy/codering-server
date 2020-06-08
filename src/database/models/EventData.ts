@@ -86,3 +86,7 @@ export const EventUserSchema = new mongoose.Schema({
     required: true,
   }
 });
+
+const EventDataModel = mongoose.model('EventData', EventDataSchema);
+
+export default EventDataModel;

@@ -1,16 +1,18 @@
 import EventModel from '../database/models/Event';
-import { Event, EventStatus } from '../models/Event';
+import { Event as EventInterface, EventStatus } from '../models/Event';
+import { EventData } from '../models/EventData';
+import EventDataModel from '../database/models/EventData';
 
 export default class EventService {
-  static async getEvents(): Promise<Event[]> {
-    return <Event[]><unknown>EventModel.find();
+  static async getEvents(): Promise<EventInterface[]> {
+    return <EventInterface[]><unknown>EventModel.find();
   }
 
   static async getEvent(repositoryId: string) {
-    return <Event | unknown>EventModel.findOne({ repositoryId });
+    return <EventInterface | unknown>EventModel.findOne({ repositoryId });
   }
 
-  static async createEvent(event: Event) {
+  static async createEvent(event: EventInterface) {
     return EventModel.create({
       repositoryId: event.repositoryId,
       repository: event.repository,
@@ -33,5 +35,15 @@ export default class EventService {
     } else {
       return null;
     }
+  }
+
+  static async createEventData(data: EventData) {
+    return EventDataModel.create({
+      repositoryId: data.repositoryId
+    });
+  }
+
+  static async getEventData(repositoryId: string) {
+    return <EventData | unknown>EventDataModel.findOne({ repositoryId });
   }
 }
