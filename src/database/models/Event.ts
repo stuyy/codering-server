@@ -43,10 +43,6 @@ export const EventSchema = new mongoose.Schema({
   mergedPullRequestPoints: {
     type: mongoose.SchemaTypes.Number,
     required: true,
-  },
-  winner: {
-    type: UserSchema,
-    required: false,
   }
 });
 

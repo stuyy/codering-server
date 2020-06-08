@@ -1,6 +1,6 @@
 export interface EventData {
   repositoryId: string;
-  users?: Map<string, EventUser>
+  users: Map<string, EventUser>
 }
 
 export interface EventUser {

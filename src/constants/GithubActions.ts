@@ -3,5 +3,6 @@ export enum GithubActions {
   CLOSED = 'closed',
   REOPENED = 'reopened',
   EDITED = 'edited',
-  MERGED = 'merged'
+  MERGED = 'merged',
+  UNKNOWN = 'unknown'
 }

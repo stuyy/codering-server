@@ -37,7 +37,8 @@ export default class EventController {
         });
         // Need to create EventData Model
         const eventData = await EventService.createEventData({
-          repositoryId: repository.id
+          repositoryId: repository.id,
+          users: new Map()
         });
         console.log(eventData);
         return res.status(201).send(event);
