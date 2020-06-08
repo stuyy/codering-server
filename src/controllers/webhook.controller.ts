@@ -3,14 +3,29 @@ import PullRequestModel from '../database/models/PullRequest';
 import { buildPullRequestObject } from '../utilities/resolver';
 import { GithubActions } from '../constants/GithubActions';
 import WebhookService from '../services/webhook.service';
+import EventService from '../services/events.service';
 
 // We need to check to make sure if the User is in the Database.
 
 export default class WebhookController {
   static async postGithubPullRequest(req: Request, res: Response) {
-    const { action, pull_request } = req.body;
+    const { action, pull_request, repository } = req.body;
     const { id: pullRequestID, merged } = pull_request;
+
     console.log(`New PR Action: ${action}`);
+
+    try {
+      const event = await EventService.validateEvent(repository.id);
+      console.log(event);
+      if (!event)
+        return res.status(409).send({ msg: 'Pull Request is not associated with a Valid Event' });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).send({ msg: 'Internal Server Error' });
+    }
+    
+    console.log(`Valid Event. Continuing`);
+
     if (pull_request.base.ref !== 'master')
       return res.status(403).json({ msg: 'Not Master Branch' });
     // Before we start saving Pull Requests to the Database, we must check the Database for an "Event"
@@ -18,22 +33,14 @@ export default class WebhookController {
     switch (action) {
       case GithubActions.OPENED: {
         console.time(`PR ${pullRequestID} was opened.`)
-        const pr = buildPullRequestObject(req.body);
-        const newPr = new PullRequestModel({
-          state: pr.state,
-          number: pr.number,
-          pullRequestData: pr.pull_request,
-          pullRequestUserData: pr.pull_request.user,
-          repository: pr.repository,
-        });
-        await newPr.save();
+        const newPr = await WebhookService.handleOpenedPullRequest(req.body);
         console.timeEnd(`PR ${pullRequestID} was opened.`)
         break;
       }
       case GithubActions.REOPENED: {
         // Search the Database for the Pull Request
         console.time('Pull Request ${pullRequestID} was re-opened.');
-        await WebhookService.findAndUpdate(pullRequestID, GithubActions.REOPENED);
+        await WebhookService.findAndUpdate(pullRequestID, GithubActions.REOPENED, pull_request.updated_at);
         console.timeEnd('Pull Request ${pullRequestID} was re-opened.');
         break;
       }
@@ -41,11 +48,11 @@ export default class WebhookController {
         // Search the Database for the Pull Request.
         if (merged) {
           console.time('Merging PR');
-          await WebhookService.findAndUpdate(pullRequestID, GithubActions.MERGED);
+          await WebhookService.findAndUpdate(pullRequestID, GithubActions.MERGED, pull_request.updated_at, pull_request.merged_at, pull_request.closed_at);
           console.timeEnd('Merging PR');
         } else {
           console.time(`Pull Request ${pullRequestID} was closed.`);
-          await WebhookService.findAndUpdate(pullRequestID, GithubActions.CLOSED);
+          await WebhookService.findAndUpdate(pullRequestID, GithubActions.CLOSED, pull_request.updated_at, undefined, pull_request.closed_at);
           console.timeEnd(`Pull Request ${pullRequestID} was closed.`);
         }
       }

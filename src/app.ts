@@ -13,6 +13,7 @@ const MongoStore = SessionStore(session);
 mongoose.connect(process.env.MONGODB || '', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
+  useFindAndModify: false,
 });
 
 const github = require('./strategies/github.strategy');
