@@ -3,7 +3,8 @@ import { PullRequest } from '../models/PullRequest';
 
 export default class PullRequestService {
   static async getPullRequests(id: string): Promise<PullRequest[]> {
-    return <PullRequest[]><unknown>PullRequestModel.find({ 'pullRequestUserData.githubId': id });
+    return <PullRequest[]><unknown>PullRequestModel
+      .find({ 'pullRequestUserData.githubId': id });
   }
 
   static async getPullRequestsByNameOrId(nameOrId: string): Promise<PullRequest[]> {
@@ -14,6 +15,7 @@ export default class PullRequestService {
   }
 
   static async getAllPullRequests(): Promise<PullRequest[]> {
-    return <PullRequest[]><unknown>PullRequestModel.find();
+    return <PullRequest[]><unknown>PullRequestModel.find()
+      .sort({ 'pullRequestData.updated_at': -1 });
   }
 }

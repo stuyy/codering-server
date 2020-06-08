@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import e, { Request, Response } from 'express';
 import PullRequestModel from '../database/models/PullRequest';
 import { buildPullRequestObject } from '../utilities/resolver';
 import { GithubActions } from '../constants/GithubActions';
@@ -36,6 +36,7 @@ export default class WebhookController {
     switch (action) {
       case GithubActions.OPENED: {
         try {
+          console.time('Start');
           console.time(`PR ${pullRequestID} was opened.`)
           const newPr = await WebhookService.handleOpenedPullRequest(req.body);
           console.timeEnd(`PR ${pullRequestID} was opened.`);
@@ -58,7 +59,7 @@ export default class WebhookController {
               console.log('Updated...');
             } else {
               console.log('Not found in Map');
-              const points: Points = { pullRequests: pullRequestPoints, comments: 0, issues: 0, merges: 0, };
+              const points: Points = { pullRequests: pullRequestPoints, comments: 0, issues: 0, merges: 0 };
               const contributions: Contributions = { pullRequests: 1, comments: 0, issues: 0, merges: 0 }
               const eventUser: EventUser = {
                 githubId: pull_request.user.id,
@@ -75,6 +76,7 @@ export default class WebhookController {
           } else {
             throw new Error('Event Data or Event not found for this Event');
           }
+          console.timeEnd('Start');
           break;
         } catch (err) {
           console.log(err);
@@ -83,8 +85,30 @@ export default class WebhookController {
       }
       case GithubActions.REOPENED: {
         // Search the Database for the Pull Request
-        console.time('Pull Request ${pullRequestID} was re-opened.');
+        console.time(`Pull Request ${pullRequestID} was re-opened.`);
         await WebhookService.findAndUpdate(pullRequestID, GithubActions.REOPENED, pull_request.updated_at);
+        const eventData = <EventData>await EventService.getEventData(repository.id);
+          const eventObj = <Event>await EventService.getEvent(repository.id);
+          
+          const { pullRequestPoints } = eventObj;
+          
+          if (eventData && eventObj) {
+            const id: string = pull_request.user.id;
+            const { users } = eventData;
+            const user = users!.get(id.toString());
+            console.log(users);
+            if (user) {
+              console.log('User found in Map');
+              console.time('Updated Merge Count & Points')
+              user.points.pullRequests += pullRequestPoints;
+              user.contributions.pullRequests++;
+              users?.set(user.githubId.toString(), user);
+              await EventDataModel.findOneAndUpdate({ repositoryId: repository.id }, { users });
+              console.timeEnd('Updated Merge Count & Points')
+            } else {
+              console.log('Something went wrong when merging. User or PR was not in Database so merge did not count.');
+            }
+          }
         console.timeEnd('Pull Request ${pullRequestID} was re-opened.');
         break;
       }
@@ -92,11 +116,59 @@ export default class WebhookController {
         // Search the Database for the Pull Request.
         if (merged) {
           console.time('Merging PR');
-          await WebhookService.findAndUpdate(pullRequestID, GithubActions.MERGED, pull_request.updated_at, pull_request.merged_at, pull_request.closed_at);
+          await WebhookService.findAndUpdate(
+            pullRequestID,
+            GithubActions.MERGED,
+            pull_request.updated_at,
+            pull_request.merged_at,
+            pull_request.closed_at);
+          const eventData = <EventData>await EventService.getEventData(repository.id);
+          const eventObj = <Event>await EventService.getEvent(repository.id);
+          
+          const { mergedPullRequestPoints } = eventObj;
+          
+          if (eventData && eventObj) {
+            const id: string = pull_request.user.id;
+            const { users } = eventData;
+            const user = users!.get(id.toString());
+            console.log(users);
+            if (user) {
+              console.log('User found in Map');
+              console.time('Updated Merge Count & Points')
+              user.points.merges += mergedPullRequestPoints;
+              user.contributions.merges++;
+              users?.set(user.githubId.toString(), user);
+              await EventDataModel.findOneAndUpdate({ repositoryId: repository.id }, { users });
+              console.timeEnd('Updated Merge Count & Points')
+            } else {
+              console.log('Something went wrong when merging. User or PR was not in Database so merge did not count.');
+            }
+          }
+
           console.timeEnd('Merging PR');
         } else {
           console.time(`Pull Request ${pullRequestID} was closed.`);
           await WebhookService.findAndUpdate(pullRequestID, GithubActions.CLOSED, pull_request.updated_at, undefined, pull_request.closed_at);
+          // Update Points
+          const eventData = <EventData>await EventService.getEventData(repository.id);
+          const eventObj = <Event>await EventService.getEvent(repository.id);
+          const { pullRequestPoints } = eventObj;
+          if (eventData && eventObj) {
+            const id: string = pull_request.user.id;
+            const { users } = eventData;
+            const user = users!.get(id.toString());
+            console.log(users);
+            if (user) {
+              console.time('Updated Merge Count & Points')
+              user.points.pullRequests -= pullRequestPoints;
+              user.contributions.pullRequests--;
+              users?.set(user.githubId.toString(), user);
+              await EventDataModel.findOneAndUpdate({ repositoryId: repository.id }, { users });
+              console.timeEnd('Updated Merge Count & Points')
+            } else {
+              console.log('Something went wrong when merging. User or PR was not in Database so merge did not count.');
+            }
+          }
           console.timeEnd(`Pull Request ${pullRequestID} was closed.`);
         }
       }
