@@ -23,7 +23,7 @@ export async function validateEventPayload(req: Request, res: Response, next: Fu
     const event = await EventService.validateEvent(repository.id);
     if (!event) {
       console.log('Not a valid event');
-      return res.status(409).send({ msg: 'Pull Request is not associated with a Valid Event' });
+      return res.status(409).send({ msg: 'The event webhook is not associated with a Valid Event' });
     }
     console.log('Event Payload Valid');
     return next();
@@ -32,3 +32,4 @@ export async function validateEventPayload(req: Request, res: Response, next: Fu
     return res.status(500).send({ msg: 'Internal Server Error' });
   }
 }
+

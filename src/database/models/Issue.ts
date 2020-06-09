@@ -12,7 +12,7 @@ export const IssueDataSchema = new mongoose.Schema({
   createdAt: { type: mongoose.SchemaTypes.Date, required: true },
   updatedAt: { type: mongoose.SchemaTypes.Date, required: true },
   closedAt: { type: mongoose.SchemaTypes.Date, required: false }
-})
+});
 
 export const GithubIssueSchema = new mongoose.Schema({
   state: {

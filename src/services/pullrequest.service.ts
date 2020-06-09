@@ -18,4 +18,11 @@ export default class PullRequestService {
     return <PullRequest[]><unknown>PullRequestModel.find()
       .sort({ 'pullRequestData.updated_at': -1 });
   }
+
+  static getPullRequestsLimit(skip: number) {
+    return <PullRequest[] | unknown>PullRequestModel.find()
+      .sort({ 'pullRequestData.updated_at': -1 })
+      .skip(skip)
+      .limit(15);
+  }
 }

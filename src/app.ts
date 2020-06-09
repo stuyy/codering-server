@@ -14,6 +14,7 @@ mongoose.connect(process.env.MONGODB || '', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   useFindAndModify: false,
+  useCreateIndex: true,
 });
 
 const github = require('./strategies/github.strategy');
