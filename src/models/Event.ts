@@ -20,6 +20,7 @@ export interface Event {
   commentsPoints: number;
   mergedPullRequestPoints: number;
   winner?: UserSession;
+  eventName: string;
 }
 
 /**

@@ -16,6 +16,7 @@ export default class AuthController {
   }
 
   static async getUserDetails(req: Request | any, res: Response) {
+    console.log(req.user);
     const { user } = <{ user: UserSession }>req;
     if (!user) return res.status(403).send({ msg: 'Not Authenticated' });
     try {

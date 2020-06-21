@@ -27,5 +27,8 @@ export default class WebhookController {
   static async postGithubIssue(req: Request, res: Response) {
     const { action, issue, repository } = req.body;
     console.log(`New Issue Action: ${action}`);
+    console.log(action);
+    console.log(issue);
+    console.log(repository);
   }
 }

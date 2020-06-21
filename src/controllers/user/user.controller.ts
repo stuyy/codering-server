@@ -6,6 +6,7 @@ import PullRequestService from '../../services/pullrequest.service';
 export default class UserController {
   
   static async getUser(req: Request, res: Response) {
+    console.log(req.user);
     const { nameOrId } = req.params;
     console.time(`Fetching user: ${nameOrId}`)
     const user = await UserService.getUser(nameOrId);
@@ -16,6 +17,7 @@ export default class UserController {
 
   static async getPullRequests(req: Request, res: Response): Promise<Response> {
     const { nameOrId } = req.params;
+    console.log(req.user);
     console.time(`Fetching user PRs: ${nameOrId}`)
     const pullRequests = await PullRequestService.getPullRequestsByNameOrId(nameOrId);
     console.timeEnd(`Fetching user PRs: ${nameOrId}`);

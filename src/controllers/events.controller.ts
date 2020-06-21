@@ -33,7 +33,8 @@ export default class EventController {
           mergedPullRequestPoints: body.mergedPullRequestPoints,
           repository: buildRepositoryObject(repository),
           repositoryId: repository.id,
-          status: EventStatus.OPENED
+          status: EventStatus.OPENED,
+          eventName: body.eventName,
         });
         // Need to create EventData Model
         const eventData = await EventService.createEventData({

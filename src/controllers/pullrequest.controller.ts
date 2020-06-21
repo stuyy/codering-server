@@ -4,6 +4,8 @@ import { PullRequest } from '../models/PullRequest';
 
 export default class PullRequestController {
   static async getPullRequests(req: Request | any, res: Response){
+    console.log(req.user);
+    if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
     console.time(`Fetching PRs for ${req.user.username} (${req.user.githubId})`);
     try {
       const pullRequests = await PullRequestService.getPullRequests(req.user.githubId);
@@ -21,7 +23,8 @@ export default class PullRequestController {
   }
   
   static async getAllPullRequests(req: Request, res: Response) {
-
+    console.log(req.user);
+    if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
     const { count } = req.query;
     if (count) {
       const results = <PullRequest[]>await PullRequestService.getPullRequestsLimit(parseInt(<string>count));
