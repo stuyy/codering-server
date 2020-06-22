@@ -32,6 +32,8 @@ passport.use(new GithubStrategy({
   callbackURL: (ENVIRONMENT === 'DEVELOPMENT' ? GH_CB_DEV : GITHUB_CALLBACK_URL) || '',
   scope: ['user'],
 }, async (accessToken: string, refreshToken: string, profile: any, done: Function) => {
+  console.log(accessToken);
+  console.log(refreshToken);
   console.time('Creating User');
   const { id: githubId, displayName, username, profileUrl } = profile;
   const { avatar_url: avatar } = profile._json;

@@ -3,6 +3,7 @@ import { Event as EventInterface, EventStatus, Event } from '../models/Event';
 import { EventData, Points, Contributions, EventUser } from '../models/EventData';
 import EventDataModel from '../database/models/EventData';
 import { GithubActions } from '../constants/GithubActions';
+import { Repository } from '../models/PullRequest';
 
 export default class EventService {
   static async getEvents(): Promise<EventInterface[]> {
@@ -13,19 +14,19 @@ export default class EventService {
     return <EventInterface | unknown>EventModel.findOne({ repositoryId });
   }
 
-  static async createEvent(event: EventInterface) {
+  static async createEvent(body: any, repository: Repository) {
     return EventModel.create({
-      repositoryId: event.repositoryId,
-      repository: event.repository,
-      status: event.status,
-      creatorId: event.creatorId,
-      startDate: event.startDate,
-      endDate: event.endDate,
-      pullRequestPoints: event.pullRequestPoints,
-      issuePoints: event.issuePoints,
-      commentsPoints: event.commentsPoints,
-      mergedPullRequestPoints: event.mergedPullRequestPoints,
-      eventName: event.eventName
+      repositoryId: repository.repositoryId,
+      repository: repository,
+      status: EventStatus.OPENED,
+      creatorId: body.creatorId,
+      startDate: body.startDate,
+      endDate: body.endDate,
+      pullRequestPoints: body.pullRequestPoints,
+      issuePoints: body.issuePoints,
+      commentsPoints: body.commentsPoints,
+      mergedPullRequestPoints: body.mergedPullRequestPoints,
+      eventName: body.eventName
     });
   }
 
