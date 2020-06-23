@@ -12,7 +12,7 @@ export function computeHash(body: Buffer, algorithm: string, secret: string) {
   return hash;
 }
 
-export function encryptToken(token: string) {
+export function encryptToken(token: string): string {
   if (SECRET_KEY && ALGORITHM) {
     const key = crypto.scryptSync(SECRET_KEY, 'salt', 24);
     const iv = Buffer.alloc(16);
@@ -22,7 +22,7 @@ export function encryptToken(token: string) {
   } throw new Error('Failed to encrypt token. No secret key or algorithm specified.');
 }
 
-export function decryptToken(token: string) {
+export function decryptToken(token: string): string {
   if (SECRET_KEY && ALGORITHM) {
     const key = crypto.scryptSync(SECRET_KEY, 'salt', 24);
     const iv = Buffer.alloc(16);
