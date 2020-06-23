@@ -1,5 +1,9 @@
 import { Request, Response } from 'express';
 import EventService from '../services/events.service';
+import { UserSession } from '../models/SessionUser';
+import OAuth2Credentials from '../database/models/OAuth2Credentials';
+import { decryptToken } from '../utilities/hash';
+import GithubService from '../services/external/github.service';
 
 export default class WebhookController {
   static async postGithubPullRequest(req: Request, res: Response) {
@@ -30,5 +34,20 @@ export default class WebhookController {
     console.log(action);
     console.log(issue);
     console.log(repository);
+  }
+
+  static async createRepositoryWebhook(req: Request, res: Response) {
+    
+  }
+
+  static async getRepositoryWebhooks(req: Request | any, res: Response) {
+    const { user } = <{ user: UserSession }>req;
+    const credentials = await OAuth2Credentials.findOne({ githubId: user.githubId });
+    if (credentials) {
+      const githubAccessToken = credentials.get('githubAccessToken');
+      const token = decryptToken(githubAccessToken);
+      const webhooks = await GithubService.getWebhooks(token);
+      res.send(webhooks);
+    }
   }
 }

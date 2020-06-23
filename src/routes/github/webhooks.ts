@@ -14,4 +14,8 @@ router.post('/issues',
   validateEventPayload,
   WebhookController.postGithubIssue);
 
+router.post('/', WebhookController.createRepositoryWebhook);
+
+router.get('/', WebhookController.getRepositoryWebhooks);
+
 export default router;
