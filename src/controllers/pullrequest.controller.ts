@@ -3,8 +3,7 @@ import PullRequestService from '../services/pullrequest.service';
 import { PullRequest } from '../models/PullRequest';
 
 export default class PullRequestController {
-  static async getPullRequests(req: Request | any, res: Response){
-    console.log(req.user);
+  static async getPullRequests(req: Request | any, res: Response) {
     if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
     console.time(`Fetching PRs for ${req.user.username} (${req.user.githubId})`);
     try {
@@ -18,12 +17,10 @@ export default class PullRequestController {
   }
 
   static async getPullRequestByIdOrName(req: Request, res: Response){
-    console.log(req.user);
     if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
   }
   
   static async getAllPullRequests(req: Request, res: Response) {
-    console.log(req.user);
     if (!req.user) return res.status(403).json({ msg: 'Not Authorized' });
     const { count } = req.query;
     if (count) {
@@ -33,7 +30,6 @@ export default class PullRequestController {
         results
       });
     }
-
     try {
       const pullRequests = await PullRequestService.getAllPullRequests();
       return res.status(200).send(pullRequests);

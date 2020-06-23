@@ -6,6 +6,9 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import { config } from 'dotenv';
 import apiRoute from './routes/index';
+import http from 'http';
+import { Socket } from 'socket.io';
+
 
 config();
 
@@ -21,6 +24,19 @@ const github = require('./strategies/github.strategy');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+const server = http.createServer(app);
+const io = require('socket.io')(server);
+
+server.listen(PORT, () => console.log(`Listening on Port ${PORT}.`));
+
+io.on('connection', (socket: Socket) => {
+  console.log('Connected.');
+  socket.on('message', (data) => {
+    console.log(data);
+    socket.emit('message', { msg: 'hey' });
+  })
+})
 
 app.use(express.json({ verify: (req: any, res, buf: Buffer) => {
   req.rawBody = buf;
@@ -44,5 +60,3 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api', apiRoute);
-
-app.listen(PORT, () => console.log(`Listening on Port ${PORT}.`));
