@@ -7,7 +7,6 @@ import GithubService from '../services/external/github.service';
 
 export default class WebhookController {
   static async postGithubPullRequest(req: Request, res: Response) {
-  
     const { action, pull_request, repository } = req.body;
     const { merged } = pull_request;
     console.log(`New PR Action: ${action}`);

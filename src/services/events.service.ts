@@ -2,7 +2,7 @@ import EventModel from '../database/models/Event';
 import { Event as EventInterface, EventStatus, Event } from '../models/Event';
 import { EventData, Points, Contributions, EventUser } from '../models/EventData';
 import EventDataModel from '../database/models/EventData';
-import { GithubActions } from '../constants/GithubActions';
+import { GithubActions } from '../constants/Github';
 import { Repository } from '../models/PullRequest';
 
 export default class EventService {

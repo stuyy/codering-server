@@ -1,5 +1,5 @@
 import PullRequestModel from '../database/models/PullRequest'
-import { GithubActions } from '../constants/GithubActions';
+import { GithubActions } from '../constants/Github';
 import EventService from './events.service';
 import { buildPullRequestObject } from '../utilities/resolver';
 

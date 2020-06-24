@@ -6,13 +6,8 @@ export function buildPullRequestObject(body: any): PullRequest {
   const { pull_request, repository } = body;
   const { user } = pull_request;
 
-  const repo: Repository = {
-    repositoryId: repository.id,
-    name: repository.name,
-    full_name: repository.full_name,
-    private: repository.private
-  }
-
+  const repo = buildRepositoryObject(repository);
+  
   const prUserData: PullRequestUserData = {
     login: user.login,
     githubId: user.id,
@@ -21,7 +16,7 @@ export function buildPullRequestObject(body: any): PullRequest {
   }
 
   const prData: PullRequestData = {
-    url: pull_request.url,
+    url: pull_request.html_url,
     pullRequestID: pull_request.id,
     node_id: pull_request.node_id,
     user: prUserData,
@@ -64,25 +59,19 @@ export function buildGithubIssueObject(body: any): GithubIssue {
     closedAt: issue.closed_at
   };
 
-  const repository: Repository = {
-    repositoryId: repo.id,
-    name: repo.name,
-    full_name: repo.full_name,
-    private: repo.private
-  }
-
-  return {
-    state,
-    issueData,
-    repository,
-  };
+  const repository = buildRepositoryObject(repo);
+  return { state, issueData, repository };
 }
 
 export function buildRepositoryObject(repo: any): Repository {
+  console.log(repo);
   return {
     repositoryId: repo.id,
     name: repo.name,
     full_name: repo.full_name,
-    private: repo.private
+    private: repo.private,
+    html_url: repo.html_url,
+    owner: repo.owner.login,
+    ownerId: repo.owner.id
   }
 }

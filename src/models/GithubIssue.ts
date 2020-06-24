@@ -1,4 +1,4 @@
-import { GithubActions } from '../constants/GithubActions';
+import { GithubActions } from '../constants/Github';
 import { PullRequestUserData, Repository } from './PullRequest';
 
 export interface GithubIssue {

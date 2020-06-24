@@ -9,7 +9,6 @@ import apiRoute from './routes/index';
 import http from 'http';
 import { Socket } from 'socket.io';
 
-
 config();
 
 const MongoStore = SessionStore(session);
@@ -26,15 +25,19 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 const server = http.createServer(app);
-const io = require('socket.io')(server);
+const io: Socket = require('socket.io')(server);
 
 server.listen(PORT, () => console.log(`Listening on Port ${PORT}.`));
 
 io.on('connection', (socket: Socket) => {
   console.log('Connected.');
-  socket.on('message', (data) => {
-    console.log(data);
-    socket.emit('message', { msg: 'hey' });
+  socket.on('message', (msg) => {
+    console.log(msg);
+    io.emit('message', { msg });
+  });
+
+  socket.on('githubPage', (data) => {
+    console.log(data + ' from github Page');
   })
 })
 

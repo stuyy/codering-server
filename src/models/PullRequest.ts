@@ -30,4 +30,7 @@ export interface Repository {
   name: string;
   full_name: string;
   private: boolean;
+  html_url: string;
+  owner: string;
+  ownerId: string;
 }

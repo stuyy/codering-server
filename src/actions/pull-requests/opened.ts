@@ -1,6 +1,6 @@
 import WebhookService from '../../services/webhook.service';
 import EventService from '../../services/events.service';
-import { GithubActions } from '../../constants/GithubActions';
+import { GithubActions } from '../../constants/Github';
 
 export default async (data: any) => {
   const { pull_request, repository, body, userId } = data;

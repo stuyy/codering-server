@@ -28,18 +28,48 @@ const PullRequestDataSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.String,
     required: true,
   },
-  nodeId: mongoose.SchemaTypes.String,
-  created_at: mongoose.SchemaTypes.Date,
+  node_id: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
+  created_at: {
+    type: mongoose.SchemaTypes.Date,
+    required: true,
+  },
   updated_at: mongoose.SchemaTypes.Date,
   closed_at: mongoose.SchemaTypes.Date,
   merged_at: mongoose.SchemaTypes.Date,
 });
 
 export const RepositorySchema = new mongoose.Schema({
-  repositoryId: mongoose.SchemaTypes.String,
-  name: mongoose.SchemaTypes.String,
-  fullName: mongoose.SchemaTypes.String,
-  private: mongoose.SchemaTypes.Boolean
+  repositoryId: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
+  name: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
+  full_name: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
+  private: {
+    type: mongoose.SchemaTypes.Boolean,
+    required: true,
+  },
+  html_url: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
+  owner: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
+  ownerId: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
 });
 
 const PullRequestSchema = new mongoose.Schema({
@@ -51,9 +81,18 @@ const PullRequestSchema = new mongoose.Schema({
     type: mongoose.SchemaTypes.Number,
     required: true,
   },
-  pullRequestData: PullRequestDataSchema,
-  pullRequestUserData: UserDataSchema,
-  repository: RepositorySchema,
+  pullRequestData: {
+    type: PullRequestDataSchema,
+    required: true,
+  },
+  pullRequestUserData: {
+    type: UserDataSchema,
+    required: true,
+  },
+  repository: {
+    type: RepositorySchema,
+    required: true,
+  },
 });
 
 const PullRequestModel = mongoose.model('PullRequest', PullRequestSchema);

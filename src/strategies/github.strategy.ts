@@ -41,10 +41,8 @@ passport.use(new GithubStrategy({
     if (findUser) {
       // Need to update User's OAuth2 Credentials
       console.log('Updating User Auth Tokens');
-      console.time('Encrypting Tokens');
       const githubAccessToken = encryptToken(accessToken);
       const githubRefreshToken = encryptToken(refreshToken);
-      console.timeEnd('Encrypting Tokens');
       await OAuth2Credentials.findOneAndUpdate({ githubId }, { githubAccessToken, githubRefreshToken })
       return done(null, findUser);
     }

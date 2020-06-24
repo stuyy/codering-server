@@ -14,20 +14,24 @@ export function computeHash(body: Buffer, algorithm: string, secret: string) {
 
 export function encryptToken(token: string): string {
   if (SECRET_KEY && ALGORITHM) {
+    console.time('Encrypting Token');
     const key = crypto.scryptSync(SECRET_KEY, 'salt', 24);
     const iv = Buffer.alloc(16);
     const cipher = crypto.createCipheriv(ALGORITHM, key, iv);
     const encrypted = cipher.update(token, 'utf8', 'base64');
+    console.timeEnd('Encrypting Token');
     return encrypted + cipher.final('base64');
   } throw new Error('Failed to encrypt token. No secret key or algorithm specified.');
 }
 
 export function decryptToken(token: string): string {
   if (SECRET_KEY && ALGORITHM) {
+    console.time('Decrypting Token');
     const key = crypto.scryptSync(SECRET_KEY, 'salt', 24);
     const iv = Buffer.alloc(16);
     const decipher = crypto.createDecipheriv(ALGORITHM, key, iv);
     const decrypted = decipher.update(token, 'base64', 'utf8');
+    console.timeEnd('Decrypting Token');
     return decrypted + decipher.final();
   } throw new Error('Failed to encrypt token. No secret key or algorithm specified.');
 }
