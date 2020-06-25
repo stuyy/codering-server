@@ -4,6 +4,7 @@ import { buildRepositoryObject } from '../utilities/resolver';
 import { UserSession } from '../models/SessionUser';
 import GithubService from '../services/external/github.service';
 import UserService from '../services/user.service';
+import { getWebhookPayloads } from '../utilities/utils';
 import EventModel from '../database/models/Event';
 
 export default class EventController {
@@ -13,6 +14,7 @@ export default class EventController {
   }
 
   static async createEvent(req: Request | any, res: Response) {
+    const { user } = <{ user: UserSession }>req;
     const repository = buildRepositoryObject(req.body.repository);
     const event = await EventService.getEvent(repository.repositoryId);
     if (event) {
@@ -25,13 +27,9 @@ export default class EventController {
         // Need to create EventData Model
         const eventData = await EventService.createEventData({ repositoryId: repository.repositoryId, users: new Map()});
         // Get Github OAuth2 Token
-        const token = await UserService.getGithubOAuth2Token(req.user.githubId);
+        const token = await UserService.getGithubOAuth2Token(user.githubId);
         // Call Github REST API to Create Webhooks
-        const response = await GithubService.postWebhooks(token, repository, req.user.githubId);
-        for (const r of response) {
-          const resp = await r.json();
-          console.log(resp);
-        }
+        await GithubService.postWebhooks(token, repository, user.githubId);
         return res
           .status(201)
           .send({ event, eventData });

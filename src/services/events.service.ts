@@ -33,7 +33,6 @@ export default class EventService {
   static async validateEvent(repositoryId: any) {
     const event = await this.getEvent(repositoryId);
     if (event) {
-      console.log(event);
       return event;
     } else {
       return null;

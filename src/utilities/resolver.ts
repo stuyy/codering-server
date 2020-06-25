@@ -64,7 +64,6 @@ export function buildGithubIssueObject(body: any): GithubIssue {
 }
 
 export function buildRepositoryObject(repo: any): Repository {
-  console.log(repo);
   return {
     repositoryId: repo.id,
     name: repo.name,

@@ -4,10 +4,15 @@ import { CoderingAPI } from '../constants/Endpoints';
 import { GithubEndpoints } from '../constants/Github';
 
 export function getWebhookUrls() {
-  return [
+  const { ENVIRONMENT } = process.env;
+  console.log(ENVIRONMENT);
+  return ENVIRONMENT === 'PRODUCTION' ? [
     getWebhookRequestBody(CoderingAPI.WEBHOOK_PR, ['pull_request']),
     getWebhookRequestBody(CoderingAPI.WEBHOOK_ISSUE, ['issues'])
-  ];
+  ] : [
+    getWebhookRequestBody(process.env.PR_WEBHOOK_DEV || '', ['pull_request']),
+    getWebhookRequestBody(process.env.ISSUE_WEBHOOK_DEV || '', ['issues'])
+  ]
 }
 
 export const getWebhookRequestBody = (
