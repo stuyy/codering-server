@@ -1,9 +1,8 @@
-import { Router, Request, Response } from 'express';
+import { Router } from 'express';
 import auth from './auth/auth';
 import github from './github';
 import users from './user/user';
 import events from './events/events';
-import { UserSession } from '../models/SessionUser';
 
 const router = Router();
 

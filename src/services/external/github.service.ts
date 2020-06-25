@@ -33,6 +33,9 @@ export default class GithubService {
     return response.json();
   }
 
+  static async deleteWebhooks() {
+  }
+
   static async getWebhook() {
 
   }
