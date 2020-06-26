@@ -6,6 +6,7 @@ import GithubService from '../services/external/github.service';
 import UserService from '../services/user.service';
 import { getWebhookPayloads } from '../utilities/utils';
 import EventModel from '../database/models/Event';
+import PullRequestService from '../services/pullrequest.service';
 
 export default class EventController {
   static async getEvents(req: Request, res: Response){
@@ -59,5 +60,12 @@ export default class EventController {
       console.log(err);
       return res.status(500).send({ msg: 'Internal Server Error' });
     }
+  }
+
+  static async getPullRequests(req: Request, res: Response) {
+    const { repositoryId } = req.params;
+    console.log(repositoryId);
+    const pullRequests = await PullRequestService.getPullRequestsByEventId(repositoryId);
+    return res.status(200).send(pullRequests);
   }
 }

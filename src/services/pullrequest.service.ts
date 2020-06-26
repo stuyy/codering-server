@@ -25,4 +25,9 @@ export default class PullRequestService {
       .skip(skip)
       .limit(15);
   }
+
+  static async getPullRequestsByEventId(id: string): Promise<PullRequest[] | unknown> {
+    return <PullRequest[] | unknown>PullRequestModel.find({ 'repository.repositoryId' : id })
+      .sort({ 'pullRequestData.updated_at': -1 })
+  }
 }

@@ -6,8 +6,11 @@ const router = Router();
 
 router.get('/', authenticated, EventController.getEvents);
 
-router.post('/', [authenticated, checkAdmin], EventController.createEvent);
+router.get('/:repositoryId/pull-requests', EventController.getPullRequests);
 
 router.put('/:repositoryId', EventController.closeEvent);
+
+router.post('/', [authenticated, checkAdmin], EventController.createEvent);
+
 
 export default router;

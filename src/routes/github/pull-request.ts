@@ -22,4 +22,5 @@ router.get('/:idOrName', PullRequestController.getPullRequestByIdOrName);
 
 router.get('/users/all', PullRequestController.getAllPullRequests);
 
+
 export default router;
