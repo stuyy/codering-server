@@ -46,7 +46,7 @@ export default class EventService {
     });
   }
 
-  static async getEventData(repositoryId: string) {
+  static async getEventData(repositoryId: string): Promise<EventData | unknown> {
     return <EventData | unknown>EventDataModel.findOne({ repositoryId });
   }
 

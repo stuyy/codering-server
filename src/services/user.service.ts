@@ -1,6 +1,7 @@
 import User from '../database/models/User';
 import OAuth2Credentials from '../database/models/OAuth2Credentials';
 import { decryptToken } from '../utilities/hash';
+import { UserSession } from '../models/SessionUser';
 
 export default class UserService {
   static async getUser(nameOrId: string) {
@@ -19,4 +20,9 @@ export default class UserService {
       }
     }
   }
+
+  static async getUsers(userIds: string[]): Promise<UserSession[] | unknown> {
+    return User.find({ githubId: { $in: userIds }});
+  }
+
 }

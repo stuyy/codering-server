@@ -7,6 +7,15 @@ import UserService from '../services/user.service';
 import { getWebhookPayloads } from '../utilities/utils';
 import EventModel from '../database/models/Event';
 import PullRequestService from '../services/pullrequest.service';
+import { EventData, EventUser } from '../models/EventData';
+import { User } from '../constants/Permissions';
+
+declare interface EventUserData extends EventUser {
+  totalPoints: number;
+  totalContributions: number;
+  avatar: string;
+  username: string;
+}
 
 export default class EventController {
   static async getEvents(req: Request, res: Response){
@@ -30,7 +39,8 @@ export default class EventController {
         // Get Github OAuth2 Token
         const token = await UserService.getGithubOAuth2Token(user.githubId);
         // Call Github REST API to Create Webhooks
-        await GithubService.postWebhooks(token, repository, user.githubId);
+        const result = await GithubService.postWebhooks(token, repository, user.githubId);
+        console.log(result);
         return res
           .status(201)
           .send({ event, eventData });
@@ -67,5 +77,32 @@ export default class EventController {
     console.log(repositoryId);
     const pullRequests = await PullRequestService.getPullRequestsByEventId(repositoryId);
     return res.status(200).send(pullRequests);
+  }
+
+  static async getLeaderboards(req: Request, res: Response) {
+    const { repositoryId } = req.params;
+    const { order } = req.query;
+
+    const sum = (sum: number, curr: number) => sum + curr;
+    const descending = (a: EventUserData, b: EventUserData) => b.totalPoints - a.totalPoints;
+    const ascending = (a: EventUserData, b: EventUserData) => a.totalPoints - b.totalPoints;
+    if (!repositoryId) return res.status(400).send({ msg: 'Bad Request' });
+    const { users: eventUsers } = <EventData> await EventService.getEventData(repositoryId);
+    if (eventUsers) {
+      const data: EventUserData[] = [];
+      const users = <UserSession[]> await UserService.getUsers(Array.from(eventUsers.keys()));
+      for (const user of users) {
+        const eventUser = eventUsers.get(user.githubId);
+        const { avatar, username } = user;
+        if (eventUser) {
+          const totalPoints: number = Object.values(eventUser.points).reduce(sum, 0);
+          const totalContributions: number = Object.values(eventUser.contributions).reduce(sum, 0);
+          data.push({ ...eventUser, totalPoints, totalContributions, avatar, username });
+        }
+      }
+      if (order && order === 'asc') return res.status(200).send(data.sort(ascending));
+      else return res.status(200).send(data.sort(descending));
+
+    } return res.status(400).send({ msg: 'Bad Request' });
   }
 }
