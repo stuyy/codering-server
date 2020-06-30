@@ -13,3 +13,9 @@ export enum GithubEndpoints {
   AUTH_CHECK = 'https://api.github.com',
   REFRESH_TOKEN = 'https://github.com/login/oauth/access_token',
 }
+
+export enum GithubEvents {
+  PR = 'pull_request',
+  ISSUE = 'issues',
+  
+}

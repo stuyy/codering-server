@@ -43,7 +43,15 @@ passport.use(new GithubStrategy({
       console.log('Updating User Auth Tokens');
       const githubAccessToken = encryptToken(accessToken);
       const githubRefreshToken = encryptToken(refreshToken);
-      await OAuth2Credentials.findOneAndUpdate({ githubId }, { githubAccessToken, githubRefreshToken })
+      // await OAuth2Credentials.findOneAndUpdate({ githubId }, { githubAccessToken, githubRefreshToken });
+      const credentials = await OAuth2Credentials.findOne({ githubId });
+      if (credentials) {
+        console.log('Credentials found. Updating');
+        await OAuth2Credentials.findOneAndUpdate({ githubId }, { githubAccessToken, githubRefreshToken });
+      } else {
+        console.log('Credentials not found, creating.');
+        await OAuth2Credentials.create({ githubId, githubAccessToken, githubRefreshToken });
+      }
       return done(null, findUser);
     }
     console.time('Creating New User');

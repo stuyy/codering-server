@@ -46,4 +46,8 @@ export default class WebhookController {
       res.send(webhooks);
     }
   }
+
+  static async postPullRequestComment(req: Request, res: Response) {
+    console.log('Hmmm');
+  }
 }

@@ -52,13 +52,11 @@ export default class GithubService {
     const credentials = await OAuth2Credentials.findOne({ githubId });
     if (!credentials) throw new Error('No OAuth2 Credentials record found in database.');
     const refresh_token = decryptToken(credentials.get('githubRefreshToken'));
-    console.log(refresh_token);
     const response = await fetch(getEncodedUrl(refresh_token), {
       method: 'POST',
       headers: { Accept: 'application/json' }
     });
     const result = await response.json();
-    console.log(result);
     if (result.error) throw new Error(result.error_description);
     return result;
   }

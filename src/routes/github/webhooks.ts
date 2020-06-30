@@ -9,10 +9,16 @@ router.post('/pull-request',
   validateEventPayload,
   WebhookController.postGithubPullRequest);
 
+router.post('/pull-request/comment',
+  validateGithubPayload,
+  validateGithubPayload,
+  WebhookController.postPullRequestComment);
+
 router.post('/issues',
   validateGithubPayload,
   validateEventPayload,
   WebhookController.postGithubIssue);
+
 
 router.post('/', WebhookController.createRepositoryWebhook);
 
