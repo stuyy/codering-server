@@ -26,7 +26,8 @@ export default class EventService {
       issuePoints: body.issuePoints,
       commentsPoints: body.commentsPoints,
       mergedPullRequestPoints: body.mergedPullRequestPoints,
-      eventName: body.eventName
+      eventName: body.eventName,
+      description: body.description,
     });
   }
 

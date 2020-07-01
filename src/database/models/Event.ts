@@ -47,7 +47,11 @@ export const EventSchema = new mongoose.Schema({
   eventName: {
     type: mongoose.SchemaTypes.String,
     required: true,
-  }
+  },
+  description: {
+    type: mongoose.SchemaTypes.String,
+    required: true,
+  },
 });
 
 const EventModel = mongoose.model('event', EventSchema);

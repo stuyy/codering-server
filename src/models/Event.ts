@@ -21,6 +21,7 @@ export interface Event {
   mergedPullRequestPoints: number;
   winner?: UserSession;
   eventName: string;
+  description: string;
 }
 
 /**
