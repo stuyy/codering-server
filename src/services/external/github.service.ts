@@ -35,11 +35,39 @@ export default class GithubService {
     return response.json();
   }
 
-  static async deleteWebhooks() {
+  static async deleteWebhooks() {}
+
+  static async getWebhook() {}
+
+  static async fetchOrganizations(username: string, githubId: string) {
+    const credentials = await OAuth2Credentials.findOne({ githubId });
+    if (!credentials) throw new Error('No OAuth2 Credentials Found in Database');
+    const accessToken = decryptToken(credentials.get('githubAccessToken'));
+    const check = await this.checkAccessToken(accessToken);
+    if (check.status === 401) {
+      const response = await this.refreshAccessToken(githubId);
+      const githubAccessToken = encryptToken(response.access_token);
+      const githubRefreshToken = encryptToken(response.refresh_token);
+      await credentials.update({ githubAccessToken, githubRefreshToken });
+      return fetch(`${GithubEndpoints.PRIVATE_ORGS}`, {
+        method: 'GET',
+        headers: { Authorization: `token ${response.access_token}`}
+      });
+    } else {
+      return fetch(`${GithubEndpoints.PRIVATE_ORGS}`, {
+        method: 'GET',
+        headers: { Authorization: `token ${accessToken}`}
+      });
+    }
   }
-
-  static async getWebhook() {
-
+  
+  static async fetchRepositoriesByOrganization(org: string, githubId: string) {
+    const credentials = await OAuth2Credentials.findOne({ githubId });
+    if (!credentials) throw new Error('No OAuth2 Credentials Found');
+    const token = decryptToken(credentials.get('githubAccessToken'));
+    return fetch(`${GithubEndpoints.ORGS}/${org}/repos`, {
+      headers: { Authorization: `token ${token}`}
+    });
   }
 
   static checkAccessToken(token: string) {
