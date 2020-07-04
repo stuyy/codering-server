@@ -12,6 +12,8 @@ export enum GithubEndpoints {
   REPOSITORY = 'https://api.github.com/repos',
   AUTH_CHECK = 'https://api.github.com',
   REFRESH_TOKEN = 'https://github.com/login/oauth/access_token',
+  PRIVATE_ORGS = 'https://api.github.com/user/orgs',
+  ORGS = 'https://api.github.com/orgs',
 }
 
 export enum GithubEvents {

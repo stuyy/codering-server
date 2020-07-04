@@ -54,7 +54,7 @@ app.use(session({
   resave: false,
   secret: 'some secret',
   cookie: {
-    maxAge: 3600000 * 24 * 7
+    maxAge: 3600000 * 8
   },
   store: new MongoStore({ mongooseConnection: mongoose.connection })
 }));
@@ -63,3 +63,5 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use('/api', apiRoute);
+
+export default server;
